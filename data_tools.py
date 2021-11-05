@@ -137,3 +137,35 @@ def filter_dataset_by_pt(df, p_ratio = 0.1):
         filtered_df = filtered_df[filtered_df["{}_p_ratio".format(particle)] > p_ratio]
         
     return filtered_df
+
+def histogram_plotter(N, binShape = 'auto', binRange = 0):
+    """
+    A function that ouputs the height and central position of bins from an
+    input data list or array.
+    
+    Params
+    ------
+    N: list or array or panda Dataframe column containg the dataset desired to 
+    be plotted.
+    
+    binShape: integer or list, if integer it defines the number of equal width 
+    bins, if list it defines the sides of the bins themselves. Set to 'auto'.
+    
+    binRange: 2-element list containing the start and end points of the
+    histogram plotting, this is overwritten if specific bins are specified in 
+    binShape as a list. Set to [N.min(),N.max()]
+    
+    Returns
+    ------
+    binPosition and binHeight, two lists containg the height and position of 
+    the bins plotted
+    """
+    if isinstance(binShape, list):
+        binRange = [binShape[0],binShape[len(binShape)-1]]
+    elif binRange == 0:
+        binRange = [N.min(),N.max()]
+    binHeight, binEdges = np.histogram(N, bins = binShape, range = (binRange[0], binRange[1]))
+    binPosition = []
+    for i in range(len(binHeight)):
+        binPosition.append((binEdges[i]+binEdges[i+1])/2)
+    return binPosition, binHeight
